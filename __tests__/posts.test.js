@@ -23,4 +23,14 @@ describe('post routes', () => {
       text: 'A post',
     });
   });
+
+  it('lists posts after redirect from oauth', async () => {
+    const agent = request.agent(app);
+
+    await agent.get('/api/v1/github/login');
+    await agent.get('/api/v1/github/login/callback?code=42').redirects(1);
+
+    const res = await agent.get('/api/v1/posts');
+    expect(res.body).toEqual([{ id: expect.any(String), text: 'Test test' }]);
+  });
 });
