@@ -39,8 +39,8 @@ describe('Gitty routes', () => {
       email: 'not-real@example.com',
     });
 
-    const res = await request(app).delete('/api/v1/github');
+    const res = await request(app).delete('/api/v1/github/sessions');
 
-    expect(res.body.message).toEqual({ message: 'Signed out successfully' });
+    expect(res.body.message).toEqual('Signed out successfully');
   });
 });
