@@ -2,6 +2,7 @@ const pool = require('../lib/utils/pool');
 const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
+const GithubUser = require('../lib/models/GithubUser');
 
 jest.mock('../lib/utils/github');
 
@@ -22,12 +23,24 @@ describe('Gitty routes', () => {
     );
   });
 
-  it.only('should login and redirect to posts', async () => {
+  it('should login and redirect to posts', async () => {
     const req = await request
       .agent(app)
       .get('/api/v1/github/login/callback?code=42')
       // check for res.redirects to see if it directed us back to the posts route
       .redirects(1);
     expect(req.redirects[0]).toEqual(expect.stringContaining('/api/v1/posts'));
+  });
+
+  it('logs a user out through a delete route', async () => {
+    await GithubUser.createUser({
+      username: 'fake_github_user',
+      avatar_url: 'https://www.placecage.com/gif/300/300',
+      email: 'not-real@example.com',
+    });
+
+    const res = await request(app).delete('/api/v1/github');
+
+    expect(res.body.message).toEqual({ message: 'Signed out successfully' });
   });
 });
