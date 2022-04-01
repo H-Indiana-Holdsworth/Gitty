@@ -30,7 +30,17 @@ describe('post routes', () => {
     await agent.get('/api/v1/github/login');
     await agent.get('/api/v1/github/login/callback?code=42').redirects(1);
 
+    const post1 = {
+      id: expect.any(String),
+      text: 'Yeet yeet post',
+    };
+
+    const post2 = {
+      id: expect.any(String),
+      text: 'Post malone',
+    };
+
     const res = await agent.get('/api/v1/posts');
-    expect(res.body).toEqual([{ id: expect.any(String), text: 'Test test' }]);
+    expect(res.body).toEqual([post1, post2]);
   });
 });
