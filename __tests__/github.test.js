@@ -24,12 +24,12 @@ describe('Gitty routes', () => {
   });
 
   it('should login and redirect to posts', async () => {
-    const req = await request
+    const res = await request
       .agent(app)
       .get('/api/v1/github/login/callback?code=42')
       // check for res.redirects to see if it directed us back to the posts route
       .redirects(1);
-    expect(req.redirects[0]).toEqual(expect.stringContaining('/api/v1/posts'));
+    expect(res.req.path).toEqual('/api/v1/posts');
   });
 
   it('logs a user out through a delete route', async () => {
